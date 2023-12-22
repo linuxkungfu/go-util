@@ -13,13 +13,6 @@ import (
 	logger "github.com/sirupsen/logrus"
 )
 
-var (
-	serverName        string = ""
-	serverId          string = ""
-	timezoneOffsetStr string = ""
-	timezoneOffset    int    = 0
-)
-
 type CustomeLog struct {
 }
 
@@ -94,20 +87,4 @@ func SetLogLevel(levelStr string) {
 		return
 	}
 	logger.SetLevel(level)
-}
-
-func SetServerInfo(name string) {
-	serverName = name
-	cur := time.Now()
-	_, timezoneOffset = cur.Local().Zone()
-	timezoneOffset = timezoneOffset / 3600
-	if timezoneOffset > 0 {
-		timezoneOffsetStr = fmt.Sprintf("T+%d", timezoneOffset)
-	} else {
-		timezoneOffsetStr = fmt.Sprintf("T%d", timezoneOffset)
-	}
-}
-
-func GetServerId() string {
-	return serverId
 }

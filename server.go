@@ -15,8 +15,11 @@ import (
 )
 
 var (
-	ConnId   int    = 0
-	ServerId string = ""
+	ConnId            int    = 0
+	serverId          string = ""
+	serverName        string = ""
+	timezoneOffsetStr string = ""
+	timezoneOffset    int    = 0
 )
 
 // 需要重新设计
@@ -62,8 +65,8 @@ type NetworkServer struct {
 // CreateServerId 生成服务器id hostname+ip+port
 func CreateServerId(idString string) string {
 	hostname, _ := os.Hostname()
-	ServerId = fmt.Sprintf("%d", murmur3.Sum64([]byte(fmt.Sprintf("%s_%s", hostname, idString))))
-	return ServerId
+	serverId = fmt.Sprintf("%d", murmur3.Sum64([]byte(fmt.Sprintf("%s_%s", hostname, idString))))
+	return serverId
 }
 
 func generateId() int {
@@ -343,4 +346,20 @@ func (srv *NetworkServer) RemoveConn(networkConn *NetworkConn) bool {
 		return true
 	}
 	return false
+}
+
+func SetServerInfo(name string) {
+	serverName = name
+	cur := time.Now()
+	_, timezoneOffset = cur.Local().Zone()
+	timezoneOffset = timezoneOffset / 3600
+	if timezoneOffset > 0 {
+		timezoneOffsetStr = fmt.Sprintf("T+%d", timezoneOffset)
+	} else {
+		timezoneOffsetStr = fmt.Sprintf("T%d", timezoneOffset)
+	}
+}
+
+func GetServerId() string {
+	return serverId
 }
