@@ -1,4 +1,4 @@
-module util
+module github.com/linuxkungfu/go-util
 
 go 1.19
 
