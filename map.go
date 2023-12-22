@@ -225,13 +225,17 @@ func replaceAndMergeInterface(first reflect.Value, second reflect.Value) reflect
 		}
 	} else if second.Kind() == reflect.Slice {
 		for index := 0; index < first.Len(); index++ {
-			secondValue := second.Index(index)
-			firstValue := first.Index(index)
-			if !firstValue.IsZero() {
-				if firstValue.Kind() == reflect.Struct || firstValue.Kind() == reflect.Slice {
-					secondValue.Set(replaceAndMergeInterface(firstValue, secondValue))
-				} else {
-					secondValue.Set(firstValue)
+			if second.Len() <= index {
+				second = reflect.Append(second, first.Index(index))
+			} else {
+				secondValue := second.Index(index)
+				firstValue := first.Index(index)
+				if !firstValue.IsZero() {
+					if firstValue.Kind() == reflect.Struct || firstValue.Kind() == reflect.Slice {
+						secondValue.Set(replaceAndMergeInterface(firstValue, secondValue))
+					} else {
+						secondValue.Set(firstValue)
+					}
 				}
 			}
 		}
