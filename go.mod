@@ -3,7 +3,7 @@ module github.com/linuxkungfu/go-util
 go 1.19
 
 require (
-	github.com/kataras/golog v0.1.7
+	github.com/kataras/golog v0.1.8
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/shirou/gopsutil v3.21.11+incompatible
