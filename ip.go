@@ -296,21 +296,21 @@ func GetAddrRegion(addr string) *IPInfo {
 	return IPQuery(ip)
 }
 
-func QueryIpInfo(client *redis.Client, ip string) *IPInfo {
+func QueryIpInfo(readClient *redis.Client, writeClient *redis.Client, ip string) *IPInfo {
 	// 先不设置过期时间
 	ipInfo, ok := ipInfoMap[ip]
 	if ok {
 		return ipInfo
 	}
 	key := fmt.Sprintf("ip_query_%s", ip)
-	if client != nil {
-		lockValue := AcquireSpinLock(client, key, time.Duration(5)*time.Second, time.Duration(3)*time.Second)
+	if readClient != nil && writeClient != nil {
+		lockValue := AcquireSpinLock(writeClient, key, time.Duration(5)*time.Second, time.Duration(3)*time.Second)
 		if lockValue != 0 {
 			defer func() {
-				ReleaseSpinLock(client, key, lockValue)
+				ReleaseSpinLock(writeClient, key, lockValue)
 			}()
 			ipInfo = &IPInfo{}
-			object := GetObjectFromRedis(client, key, ipInfo)
+			object := GetObjectFromRedis(readClient, key, ipInfo)
 			if object != nil {
 				ipInfo = object.(*IPInfo)
 				ipInfoMap[ip] = ipInfo
@@ -321,8 +321,8 @@ func QueryIpInfo(client *redis.Client, ip string) *IPInfo {
 	ipInfo = IPQuery(ip)
 	if ipInfo != nil {
 		ipInfoMap[ip] = ipInfo
-		if client != nil {
-			SetObjectToRedis(client, key, ipInfo, time.Duration(2400)*time.Hour)
+		if writeClient != nil {
+			SetObjectToRedis(writeClient, key, ipInfo, time.Duration(2400)*time.Hour)
 		}
 	}
 	return ipInfo
