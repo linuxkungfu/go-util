@@ -1,14 +1,12 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 
-	// "github.com/linuxkungfu/go-util"
-	"log/slog"
+	"github.com/linuxkungfu/go-util"
 )
 
 func main() {
-	// serverId := util.CreateServerId("123")
-	// fmt.Printf("server id:%s", serverId)
-	slog.Info("Hello world!")
+	serverId := util.CreateServerId("123")
+	fmt.Printf("server id:%s", serverId)
 }
