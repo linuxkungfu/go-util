@@ -8,13 +8,16 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
+
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	logger "github.com/sirupsen/logrus"
 )
 
 var (
-	serverName string = ""
-	serverId   string = ""
+	serverName        string = ""
+	serverId          string = ""
+	timezoneOffsetStr string = ""
+	timezoneOffset    int    = 0
 )
 
 type CustomeLog struct {
@@ -96,6 +99,14 @@ func SetLogLevel(levelStr string) {
 func SetServerInfo(name string, id string) {
 	serverName = name
 	serverId = id
+	cur := time.Now()
+	_, timezoneOffset = cur.Local().Zone()
+	timezoneOffset = timezoneOffset / 3600
+	if timezoneOffset > 0 {
+		timezoneOffsetStr = fmt.Sprintf("T+%d", timezoneOffset)
+	} else {
+		timezoneOffsetStr = fmt.Sprintf("T%d", timezoneOffset)
+	}
 }
 
 func GetServerId() string {

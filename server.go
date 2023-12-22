@@ -60,9 +60,9 @@ type NetworkServer struct {
 }
 
 // CreateServerId 生成服务器id hostname+ip+port
-func CreateServerId() string {
+func CreateServerId(idString string) string {
 	hostname, _ := os.Hostname()
-	ServerId = fmt.Sprintf("%d", murmur3.Sum64([]byte(fmt.Sprintf("%s_%s_%d", hostname, localIp, sysConfig.WebServer.Port))))
+	ServerId = fmt.Sprintf("%d", murmur3.Sum64([]byte(fmt.Sprintf("%s_%s", hostname, idString))))
 	return ServerId
 }
 
