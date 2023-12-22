@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/redis/go-redis/v9"
 	logger "github.com/sirupsen/logrus"
 )
 
@@ -22,7 +23,8 @@ const (
 )
 
 var (
-	IpStackApiKey string = IpStackApiKey2
+	IpStackApiKey string             = IpStackApiKey2
+	ipInfoMap     map[string]*IPInfo = map[string]*IPInfo{}
 )
 
 type IPLanguage struct {
@@ -292,4 +294,36 @@ func GetAddrRegion(addr string) *IPInfo {
 		return nil
 	}
 	return IPQuery(ip)
+}
+
+func QueryIpInfo(client *redis.Client, ip string) *IPInfo {
+	// 先不设置过期时间
+	ipInfo, ok := ipInfoMap[ip]
+	if ok {
+		return ipInfo
+	}
+	key := fmt.Sprintf("ip_query_%s", ip)
+	if client != nil {
+		lockValue := AcquireSpinLock(client, key, time.Duration(5)*time.Second, time.Duration(3)*time.Second)
+		if lockValue != 0 {
+			defer func() {
+				ReleaseSpinLock(client, key, lockValue)
+			}()
+			ipInfo = &IPInfo{}
+			object := GetObjectFromRedis(client, key, ipInfo)
+			if object != nil {
+				ipInfo = object.(*IPInfo)
+				ipInfoMap[ip] = ipInfo
+				return ipInfo
+			}
+		}
+	}
+	ipInfo = IPQuery(ip)
+	if ipInfo != nil {
+		ipInfoMap[ip] = ipInfo
+		if client != nil {
+			SetObjectToRedis(client, key, ipInfo, time.Duration(2400)*time.Hour)
+		}
+	}
+	return ipInfo
 }
