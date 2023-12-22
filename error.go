@@ -33,10 +33,11 @@ const (
 	Code_Signalling_UnReplicate_Error ErrorCode = 5011
 
 	// websocket error
-	Code_WebSocket_Unauth        ErrorCode = 6001
-	Code_WebSocket_MissParams    ErrorCode = 6002
-	Code_WebSocket_Auth_Failed   ErrorCode = 6003
-	Code_WebSocket_Illegal_Token ErrorCode = 6004
+	Code_WebSocket_Unauth              ErrorCode = 6001
+	Code_WebSocket_MissParams          ErrorCode = 6002
+	Code_WebSocket_Auth_Failed         ErrorCode = 6003
+	Code_WebSocket_Illegal_Token       ErrorCode = 6004
+	Code_WebSocket_Invalid_Auth_Params ErrorCode = 6005
 )
 
 var errorMsgMap = map[ErrorCode]string{
@@ -65,10 +66,11 @@ var errorMsgMap = map[ErrorCode]string{
 	Code_Http_Res_Code_Error:        "http response buz code error",
 	Code_Build_Rtp_Error:            "build rtp error",
 
-	Code_WebSocket_Unauth:        "unauthorized error",
-	Code_WebSocket_MissParams:    "miss require parameters",
-	Code_WebSocket_Auth_Failed:   "authentication failed",
-	Code_WebSocket_Illegal_Token: "illegal token",
+	Code_WebSocket_Unauth:              "unauthorized error",
+	Code_WebSocket_MissParams:          "miss require parameters",
+	Code_WebSocket_Auth_Failed:         "authentication failed",
+	Code_WebSocket_Illegal_Token:       "illegal token",
+	Code_WebSocket_Invalid_Auth_Params: "invalid auth parameters",
 }
 
 func ErrorCodeToMsg(ec ErrorCode) string {
