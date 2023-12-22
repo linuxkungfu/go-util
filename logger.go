@@ -96,9 +96,8 @@ func SetLogLevel(levelStr string) {
 	logger.SetLevel(level)
 }
 
-func SetServerInfo(name string, id string) {
+func SetServerInfo(name string) {
 	serverName = name
-	serverId = id
 	cur := time.Now()
 	_, timezoneOffset = cur.Local().Zone()
 	timezoneOffset = timezoneOffset / 3600
