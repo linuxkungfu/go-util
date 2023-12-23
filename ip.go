@@ -300,7 +300,11 @@ func QueryIpInfo(readClient *redis.Client, writeClient *redis.Client, ip string)
 	// 先不设置过期时间
 	ipInfo, ok := ipInfoMap[ip]
 	if ok {
-		return ipInfo
+		if ipInfo.Country != "unknown" && ipInfo.CountryFlagEmoji != "" {
+			return ipInfo
+		} else {
+			logger.Warnf("[util][QueryIpInfo] new query ip:%s country:%s or emjo is empty", ip, ipInfo.Country)
+		}
 	}
 	key := fmt.Sprintf("ip_query_%s", ip)
 	if readClient != nil && writeClient != nil {
@@ -313,8 +317,13 @@ func QueryIpInfo(readClient *redis.Client, writeClient *redis.Client, ip string)
 			object := GetObjectFromRedis(readClient, key, ipInfo)
 			if object != nil {
 				ipInfo = object.(*IPInfo)
-				ipInfoMap[ip] = ipInfo
-				return ipInfo
+				if ipInfo.Country != "unknown" && ipInfo.CountryFlagEmoji != "" {
+					ipInfoMap[ip] = ipInfo
+					return ipInfo
+				} else {
+					logger.Warnf("[util][QueryIpInfo] new query ip:%s country:%s or emjo is empty", ip, ipInfo.Country)
+				}
+
 			}
 		}
 	}

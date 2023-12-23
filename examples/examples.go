@@ -8,5 +8,5 @@ import (
 
 func main() {
 	serverId := util.CreateServerId("123")
-	fmt.Printf("server id:%s", serverId)
+	fmt.Printf("server id:%s\n", serverId)
 }
