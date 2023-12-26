@@ -50,40 +50,40 @@ func GetStringValueFromMap(key string, dataMap map[string]interface{}) (string, 
 	if !valueOk {
 		return "", valueOk
 	}
-	switch valueInterface.(type) {
+	switch t := valueInterface.(type) {
 	case string:
-		return valueInterface.(string), true
+		return t, true
 	default:
 		return "", false
 	}
 }
 
 func GetIntValueFromInterface(value interface{}) (int, bool) {
-	switch value.(type) {
+	switch t := value.(type) {
 	case int8:
-		return int(value.(int8)), true
+		return int(t), true
 	case int16:
-		return int(value.(int16)), true
+		return int(t), true
 	case int32:
-		return int(value.(int32)), true
+		return int(t), true
 	case int64:
-		return int(value.(int64)), true
+		return int(t), true
 	case uint8:
-		return int(value.(uint8)), true
+		return int(t), true
 	case uint16:
-		return int(value.(uint16)), true
+		return int(t), true
 	case uint32:
-		return int(value.(uint32)), true
+		return int(t), true
 	case uint64:
-		return int(value.(uint64)), true
+		return int(t), true
 	case float32:
-		return int(value.(float32)), true
+		return int(t), true
 	case float64:
-		return int(value.(float64)), true
+		return int(t), true
 	case string:
-		i, err := strconv.Atoi(value.(string))
+		i, err := strconv.Atoi(t)
 		if err != nil {
-			logger.Warnf("[map][]GetIntValueFromInterface string to int failed:%s", value.(string))
+			logger.Warnf("[map][]GetIntValueFromInterface string to int failed:%s", t)
 			return 0, false
 		} else {
 			return i, true
@@ -95,29 +95,29 @@ func GetIntValueFromInterface(value interface{}) (int, bool) {
 }
 
 func GetUintValueFromInterface(value interface{}) (uint, bool) {
-	switch value.(type) {
+	switch t := value.(type) {
 	case int8:
-		return uint(value.(int8)), true
+		return uint(t), true
 	case int16:
-		return uint(value.(int16)), true
+		return uint(t), true
 	case int32:
-		return uint(value.(int32)), true
+		return uint(t), true
 	case int64:
-		return uint(value.(int64)), true
+		return uint(t), true
 	case uint8:
-		return uint(value.(uint8)), true
+		return uint(t), true
 	case uint16:
-		return uint(value.(uint16)), true
+		return uint(t), true
 	case uint32:
-		return uint(value.(uint32)), true
+		return uint(t), true
 	case uint64:
-		return uint(value.(uint64)), true
+		return uint(t), true
 	case float32:
-		return uint(value.(float32)), true
+		return uint(t), true
 	case float64:
-		return uint(value.(float64)), true
+		return uint(t), true
 	case string:
-		ui64, err := strconv.ParseUint(value.(string), 0, 64)
+		ui64, err := strconv.ParseUint(t, 0, 64)
 		if err != nil {
 			logger.Warnf("[map][]GetUintValueFromInterface failed:%s", err.Error())
 			return 0, false
@@ -131,29 +131,29 @@ func GetUintValueFromInterface(value interface{}) (uint, bool) {
 }
 
 func GetUint64ValueFromInterface(value interface{}) (uint64, bool) {
-	switch value.(type) {
+	switch t := value.(type) {
 	case int8:
-		return uint64(value.(int8)), true
+		return uint64(t), true
 	case int16:
-		return uint64(value.(int16)), true
+		return uint64(t), true
 	case int32:
-		return uint64(value.(int32)), true
+		return uint64(t), true
 	case int64:
-		return uint64(value.(int64)), true
+		return uint64(t), true
 	case uint8:
-		return uint64(value.(uint8)), true
+		return uint64(t), true
 	case uint16:
-		return uint64(value.(uint16)), true
+		return uint64(t), true
 	case uint32:
-		return uint64(value.(uint32)), true
+		return uint64(t), true
 	case uint64:
-		return uint64(value.(uint64)), true
+		return uint64(t), true
 	case float32:
-		return uint64(value.(float32)), true
+		return uint64(t), true
 	case float64:
-		return uint64(value.(float64)), true
+		return uint64(t), true
 	case string:
-		ui64, err := strconv.ParseUint(value.(string), 0, 64)
+		ui64, err := strconv.ParseUint(t, 0, 64)
 		if err != nil {
 			logger.Warnf("[map][]GetUint64ValueFromInterface failed:%s", err.Error())
 			return 0, false
@@ -167,29 +167,29 @@ func GetUint64ValueFromInterface(value interface{}) (uint64, bool) {
 }
 
 func GetInt64ValueFromInterface(value interface{}) (int64, bool) {
-	switch value.(type) {
+	switch t := value.(type) {
 	case int8:
-		return int64(value.(int8)), true
+		return int64(t), true
 	case int16:
-		return int64(value.(int16)), true
+		return int64(t), true
 	case int32:
-		return int64(value.(int32)), true
+		return int64(t), true
 	case int64:
-		return int64(value.(int64)), true
+		return int64(t), true
 	case uint8:
-		return int64(value.(uint8)), true
+		return int64(t), true
 	case uint16:
-		return int64(value.(uint16)), true
+		return int64(t), true
 	case uint32:
-		return int64(value.(uint32)), true
+		return int64(t), true
 	case uint64:
-		return int64(value.(uint64)), true
+		return int64(t), true
 	case float32:
-		return int64(value.(float32)), true
+		return int64(t), true
 	case float64:
-		return int64(value.(float64)), true
+		return int64(t), true
 	case string:
-		i64, err := strconv.ParseInt(value.(string), 0, 64)
+		i64, err := strconv.ParseInt(t, 0, 64)
 		if err != nil {
 			logger.Warnf("[map][]GetInt64ValueFromInterface failed:%s", err.Error())
 			return 0, false

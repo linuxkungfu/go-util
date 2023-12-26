@@ -16,7 +16,11 @@ import (
 )
 
 func MapToStruct(m map[string]interface{}, s interface{}) error {
-	data, err := json.Marshal(m)
+	return InterfaceToStruct(m, s)
+}
+
+func InterfaceToStruct(i interface{}, s interface{}) error {
+	data, err := json.Marshal(i)
 	if err != nil {
 		return err
 	} else {
