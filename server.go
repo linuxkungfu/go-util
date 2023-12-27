@@ -1,8 +1,10 @@
 package util
 
 import (
+	"crypto/md5"
 	"errors"
 	"fmt"
+	"io"
 	"net"
 	"os"
 	"runtime/debug"
@@ -362,4 +364,14 @@ func SetServerInfo(name string) {
 
 func GetServerId() string {
 	return serverId
+}
+
+func PasswordPlainToMd5(userId uint64, password string) string {
+	h := md5.New()
+	io.WriteString(h, "kungapp")
+	io.WriteString(h, password)
+	io.WriteString(h, fmt.Sprintf("%d", userId))
+
+	return fmt.Sprintf("%x", h.Sum(nil))
+
 }
