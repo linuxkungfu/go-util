@@ -11,24 +11,27 @@ import (
 )
 
 const (
-	Ip_APIUrl         string = "http://ip-api.com/json/"
-	IpStackApiUrl     string = "http://api.ipstack.com"
-	APIIpUrl          string = "http://apiip.net/api"
-	IPApiUrl          string = "http://api.ipapi.com/api/"
-	IpUserAgentInfo   string = "https://ip.useragentinfo.com/json"
-	IPToLocation      string = "https://api.ip2location.io/"
+	Ip_APIUrl       string = "http://ip-api.com/json/"
+	IpStackApiUrl   string = "http://api.ipstack.com"
+	APIIpUrl        string = "http://apiip.net/api"
+	IPApiUrl        string = "http://api.ipapi.com/api/"
+	IpUserAgentInfo string = "https://ip.useragentinfo.com/json"
+	IPToLocation    string = "https://api.ip2location.io/"
+	IPRegistry      string = "https://api.ipregistry.co/"
+
 	IpStackApiKey1    string = "7526b5001e2cc6fbc854feddc19e4a76"
 	IpStackApiKey2    string = "e3dcfe9ed9635455e3333ce8eadb9ea3"
 	APIIpKey          string = "3f740f6d-7ff3-41d0-bcf7-2f844d6832f5"
 	IPApiKey          string = "8557773513ffb5242020ad75fdf76e97"
 	IPToLocationKey   string = "5DFCDB79756CE10039FCE40E36EB632D"
+	IPRegistryKey     string = "3fbw90yjv8v0pog4"
 	IpQueryMaxTimeout        = time.Duration(60) * time.Second
 )
 
 var (
 	IpStackApiKey    string             = IpStackApiKey2
 	ipInfoMap        map[string]*IPInfo = map[string]*IPInfo{}
-	ipQueryFunc                         = [...]func(string) *IPInfo{IPToLocationQuery, APIIpQuery, IPStackQuery, IP_ApiQuery}
+	ipQueryFunc                         = [...]func(string) *IPInfo{IPToLocationQuery, IPRegistryQuery, APIIpQuery, IPStackQuery, IP_ApiQuery}
 	ipQueryFuncIndex                    = 0
 )
 
@@ -84,6 +87,110 @@ type IPSecurity struct {
 	IsSpamhaus    bool   `json:"isSpamhaus,omitempty"`
 	Suggestion    string `json:"suggestion,omitempty"`
 	Network       string `json:"network,omitempty"`
+}
+type IPRegistryCountryFlag struct {
+	Emoji        string `json:"emoji"`
+	EmojiUnicode string `json:"emoji_unicode"`
+	EmojiTwo     string `json:"emojitwo"`
+	Noto         string `json:"noto"`
+	Twemoji      string `json:"twemoji"`
+	Wikimedia    string `json:"wikimedia"`
+}
+type IPRegistryCountry struct {
+	Name              string                `json:"name"`
+	Code              string                `json:"code"`
+	Capital           string                `json:"capital"`
+	Area              string                `json:"area"`
+	Borders           string                `json:"borders"`
+	CallingCode       string                `json:"calling_code"`
+	Population        int                   `json:"population"`
+	PopulationDensity int                   `json:"population_density"`
+	Flag              IPRegistryCountryFlag `json:"flag"`
+	Languages         []IPLanguage          `json:"languages"`
+	Tld               string                `json:"tld"`
+}
+type IPRegistryRegion struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
+
+type IPRegisterLocationContinent struct {
+	Code string `json:"code"`
+	Name string `json:"name"`
+}
+type IPRegistryLocation struct {
+	Continent IPRegisterLocationContinent `json:"continent"`
+	Country   IPRegistryCountry           `json:"country"`
+	Region    IPRegistryRegion            `json:"region"`
+	City      string                      `json:"city"`
+	Postal    string                      `json:"postal"`
+	Latitude  float32                     `json:"latitude"`
+	Longitude float32                     `json:"longitude"`
+	Language  IPLanguage                  `json:"language"`
+	In_eu     bool                        `json:"in_eu"`
+}
+type IPRegistrySecurity struct {
+	Is_anonymous      bool `json:"is_anonymous"`
+	Is_abuser         bool `json:"is_abuser"`
+	Is_attacker       bool `json:"is_attacker"`
+	Is_bogon          bool `json:"is_bogon"`
+	Is_cloud_provider bool `json:"is_cloud_provider"`
+	Is_proxy          bool `json:"is_proxy"`
+	Is_relay          bool `json:"is_relay"`
+	Is_threat         bool `json:"is_threat"`
+	Is_tor            bool `json:"is_tor"`
+	Is_tor_exit       bool `json:"is_tor_exit"`
+	Is_vpn            bool `json:"is_vpn"`
+}
+type IPRegistryTimeZone struct {
+	Id                 string `json:"id"`
+	Abbreviation       string `json:"abbreviation"`
+	CurrentTime        string `json:"current_time"`
+	Name               string `json:"name"`
+	Offset             int    `json:"offset"`
+	In_daylight_saving bool   `json:"in_daylight_saving"`
+}
+type IPRegistryCurrencyFormatNegative struct {
+	Prefix string `json:"prefix"`
+	Suffix string `json:"suffix"`
+}
+type IPRegistryCurrencyFormatPositive struct {
+	Prefix string `json:"prefix"`
+	Suffix string `json:"suffix"`
+}
+
+type IPRegistryCurrencyFormat struct {
+	Negative IPRegistryCurrencyFormatNegative `json:"negative"`
+	Positive IPRegistryCurrencyFormatPositive `json:"positive"`
+}
+
+type IPRegistryCurrency struct {
+	Code         string                   `json:"code"`
+	Name         string                   `json:"name"`
+	NameNative   string                   `json:"name_native"`
+	Plural       string                   `json:"plural"`
+	PluralNative string                   `json:"plural_native"`
+	Symbol       string                   `json:"symbol"`
+	SymbolNative string                   `json:"symbol_native"`
+	Format       IPRegistryCurrencyFormat `json:"format"`
+}
+
+type IPRegistryCarrier struct {
+	Name string `json:"name"`
+	Mcc  string `json:"mcc"`
+	Mnc  string `json:"mnc"`
+}
+type IPRegistryCompany struct {
+	Domain string `json:"domain"`
+	Name   string `json:"name"`
+	Type   string `json:"type"`
+}
+type IPRegistryConnection struct {
+	Asn          string `json:"asn"`
+	Domain       string `json:"domain"`
+	Organization string `json:"organization"`
+	Route        string `json:"route"`
+	Type         string `json:"type"`
 }
 type APIIPMessage struct {
 	Code int    `json:"code,omitempty"`
@@ -189,6 +296,18 @@ type IPTOLacationInfo struct {
 	ASN         string  `json:"asn"`
 	As          string  `json:"as"`
 	IsProxy     bool    `json:"is_proxy"`
+}
+
+type IPRegistryInfo struct {
+	Ip         string               `json:"ip"`
+	Type       string               `json:"type"`
+	Carrier    IPRegistryCarrier    `json:"carrier"`
+	Company    IPRegistryCompany    `json:"company"`
+	Connection IPRegistryConnection `json:"connection"`
+	Currency   IPRegistryCurrency   `json:"currency"`
+	Location   IPRegistryLocation   `json:"location"`
+	Security   IPRegistrySecurity   `json:"security"`
+	TimeZone   IPRegistryTimeZone   `json:"time_zone"`
 }
 
 func IPQuery(ip string) *IPInfo {
@@ -320,7 +439,33 @@ func IPToLocationQuery(ip string) *IPInfo {
 	ipInfo.UpdateTS = time.Now()
 	return ipInfo
 }
+func IPRegistryQuery(ip string) *IPInfo {
+	url := fmt.Sprintf("%s%s?key=%s", IPRegistry, ip, IPRegistryKey)
+	ipInfoIf, err := HttpGetJson(url, &IPRegistryInfo{}, IpQueryMaxTimeout)
+	if err != nil {
+		logger.Warnf("[util][IPToLocationQuery]new query ip:%s failed:%s", ip, err.Error())
+		return nil
+	}
+	ipRegistryInfo := ipInfoIf.(*IPRegistryInfo)
+	ipInfo := &IPInfo{}
 
+	ipInfo.City = ipRegistryInfo.Location.City
+	ipInfo.Country = ipRegistryInfo.Location.Country.Name
+	ipInfo.CountryFlag = ipRegistryInfo.Location.Country.Flag.Noto
+	ipInfo.CountryCode = ipRegistryInfo.Location.Country.Code
+	ipInfo.CountryFlagEmoji = ipRegistryInfo.Location.Country.Flag.Emoji
+	ipInfo.CountryFlagEmojiUnicode = ipRegistryInfo.Location.Country.Flag.EmojiUnicode
+	ipInfo.Lat = ipRegistryInfo.Location.Latitude
+	ipInfo.Lon = ipRegistryInfo.Location.Longitude
+	ipInfo.Query = ipRegistryInfo.Ip
+	ipInfo.Region = ipRegistryInfo.Location.Region.Code
+	ipInfo.RegionName = ipRegistryInfo.Location.Region.Name
+	ipInfo.Zip = ipRegistryInfo.Location.Postal
+	ipInfo.Timezone = ipRegistryInfo.TimeZone.Name
+	ipInfo.ISP = ipRegistryInfo.Company.Name
+	ipInfo.UpdateTS = time.Now()
+	return ipInfo
+}
 func GetAddrFromNetworkAddr(addr string) string {
 	if strings.Contains(addr, "[") && strings.Contains(addr, "]") {
 		values := strings.Split(addr, "]:")
