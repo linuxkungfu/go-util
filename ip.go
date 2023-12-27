@@ -5,6 +5,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/linuxkungfu/go-util/dep/countries"
 	"github.com/redis/go-redis/v9"
 	logger "github.com/sirupsen/logrus"
 )
@@ -15,16 +16,20 @@ const (
 	APIIpUrl          string = "http://apiip.net/api"
 	IPApiUrl          string = "http://api.ipapi.com/api/"
 	IpUserAgentInfo   string = "https://ip.useragentinfo.com/json"
+	IPToLocation      string = "https://api.ip2location.io/"
 	IpStackApiKey1    string = "7526b5001e2cc6fbc854feddc19e4a76"
 	IpStackApiKey2    string = "e3dcfe9ed9635455e3333ce8eadb9ea3"
 	APIIpKey          string = "3f740f6d-7ff3-41d0-bcf7-2f844d6832f5"
 	IPApiKey          string = "8557773513ffb5242020ad75fdf76e97"
+	IPToLocationKey   string = "5DFCDB79756CE10039FCE40E36EB632D"
 	IpQueryMaxTimeout        = time.Duration(60) * time.Second
 )
 
 var (
-	IpStackApiKey string             = IpStackApiKey2
-	ipInfoMap     map[string]*IPInfo = map[string]*IPInfo{}
+	IpStackApiKey    string             = IpStackApiKey2
+	ipInfoMap        map[string]*IPInfo = map[string]*IPInfo{}
+	ipQueryFunc                         = [...]func(string) *IPInfo{IPToLocationQuery, APIIpQuery, IPStackQuery, IP_ApiQuery}
+	ipQueryFuncIndex                    = 0
 )
 
 type IPLanguage struct {
@@ -171,17 +176,34 @@ type IPStackInfo struct {
 	Location      IPLocationInfo `json:"location"`
 }
 
+type IPTOLacationInfo struct {
+	Ip          string  `json:"ip"`
+	CountryCode string  `json:"country_code"`
+	CountryName string  `json:"country_name"`
+	RegionName  string  `json:"region_name"`
+	CityName    string  `json:"city_name"`
+	Latitude    float32 `json:"latitude"`
+	Longitude   float32 `json:"longitude"`
+	Zip         string  `json:"zip_code"`
+	TimeZone    string  `json:"time_zone"`
+	ASN         string  `json:"asn"`
+	As          string  `json:"as"`
+	IsProxy     bool    `json:"is_proxy"`
+}
+
 func IPQuery(ip string) *IPInfo {
-	res := APIIpQuery(ip)
-	if res == nil {
-		res = IPStackQuery(ip)
-		if res == nil {
-			return IP_ApiQuery(ip)
-		} else {
+	index := ipQueryFuncIndex
+	for {
+		res := ipQueryFunc[index](ip)
+		if res != nil {
+			ipQueryFuncIndex = index
 			return res
+		} else {
+			index = (index + 1) % len(ipQueryFunc)
+			if index == ipQueryFuncIndex {
+				return nil
+			}
 		}
-	} else {
-		return res
 	}
 }
 
@@ -272,6 +294,29 @@ func IPStackQuery(ip string) *IPInfo {
 	ipInfo.Region = ipStackInfo.RegionName
 	ipInfo.RegionName = ipStackInfo.RegionCode
 	ipInfo.Zip = ipStackInfo.Zip
+	ipInfo.UpdateTS = time.Now()
+	return ipInfo
+}
+
+func IPToLocationQuery(ip string) *IPInfo {
+	url := fmt.Sprintf("%s?key=%s&ip=%s", IPToLocation, IPToLocationKey, ip)
+	ipInfoIf, err := HttpGetJson(url, &IPTOLacationInfo{}, IpQueryMaxTimeout)
+	if err != nil {
+		logger.Warnf("[util][IPToLocationQuery]new query ip:%s failed:%s", ip, err.Error())
+		return nil
+	}
+	ipToLocationInfo := ipInfoIf.(*IPTOLacationInfo)
+	ipInfo := &IPInfo{}
+	ipInfo.City = ipToLocationInfo.CityName
+	ipInfo.Country = countries.ByName(ipToLocationInfo.CountryCode).String()
+	ipInfo.CountryCode = ipToLocationInfo.CountryCode
+	ipInfo.CountryFlagEmoji, ipInfo.CountryFlagEmojiUnicode = GetFlag(ipToLocationInfo.CountryCode)
+	ipInfo.Lat = ipToLocationInfo.Latitude
+	ipInfo.Lon = ipToLocationInfo.Longitude
+	ipInfo.Query = ipToLocationInfo.Ip
+	// ipInfo.Region = ipToLocationInfo.Regioname
+	ipInfo.RegionName = ipToLocationInfo.RegionName
+	ipInfo.Zip = ipToLocationInfo.Zip
 	ipInfo.UpdateTS = time.Now()
 	return ipInfo
 }

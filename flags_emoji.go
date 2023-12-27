@@ -283,7 +283,7 @@ func GetFlagUnicode(flag string) string {
 	flagArray := []rune(flag)
 	for index := range flagArray {
 		hex := strings.ToUpper(strconv.FormatInt(int64(flagArray[index]), 16))
-		unicodeString += fmt.Sprintf("\\U+%s ", hex)
+		unicodeString += fmt.Sprintf("U+%s ", hex)
 	}
 	return unicodeString
 }
