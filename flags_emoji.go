@@ -281,9 +281,14 @@ func GetFlag(countryCode string) (string, string) {
 func GetFlagUnicode(flag string) string {
 	unicodeString := ""
 	flagArray := []rune(flag)
+	endIndex := len(flagArray) - 1
 	for index := range flagArray {
 		hex := strings.ToUpper(strconv.FormatInt(int64(flagArray[index]), 16))
-		unicodeString += fmt.Sprintf("U+%s ", hex)
+		if index < endIndex {
+			unicodeString += fmt.Sprintf("U+%s ", hex)
+		} else {
+			unicodeString += fmt.Sprintf("U+%s", hex)
+		}
 	}
 	return unicodeString
 }
