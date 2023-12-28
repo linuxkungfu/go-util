@@ -21,6 +21,7 @@ func main() {
 	// fmt.Printf("ipInfo:%v\n", ipInfo)
 	// ipInfo := util.IPRegistryQuery("191.6.52.188")
 	// fmt.Printf("ipInfo:%v\n", ipInfo)
-	md5Password := util.PasswordPlainToMd5(124, "123446")
-	fmt.Printf("md5Password:%s\n", md5Password)
+	// md5Password := util.PasswordPlainToMd5(124, "123446")
+	// fmt.Printf("md5Password:%s\n", md5Password)
+	fmt.Printf("device category:%s", util.GetDeviceCategory("", ""))
 }
