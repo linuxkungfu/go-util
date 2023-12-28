@@ -17,6 +17,7 @@ const (
 	Code_Miss_Parameters   ErrorCode = 1005
 	Code_Path_Config_Error ErrorCode = 1006
 	Code_Invalid_Device_Id ErrorCode = 1007
+	Code_Account_Is_Binded ErrorCode = 1008
 
 	Code_Trace_Event_Is_Empty ErrorCode = 2001
 
@@ -54,6 +55,7 @@ var errorMsgMap = map[ErrorCode]string{
 	Code_Miss_Parameters:     "miss required patameters",
 	Code_Path_Config_Error:   "router path config error",
 	Code_Invalid_Device_Id:   "invalid device id",
+	Code_Account_Is_Binded:   "account is binded",
 
 	Code_Trace_Event_Is_Empty: "trace event requires at least one",
 
