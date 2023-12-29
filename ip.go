@@ -538,26 +538,40 @@ func QueryIpInfo(readClient *redis.Client, writeClient *redis.Client, ip string)
 		}
 	}
 	key := fmt.Sprintf("ip_query_%s", ip)
-	if readClient != nil && writeClient != nil {
-		lockValue := AcquireSpinLock(writeClient, key, time.Duration(5)*time.Second, time.Duration(3)*time.Second)
-		if lockValue != 0 {
-			defer func() {
-				ReleaseSpinLock(writeClient, key, lockValue)
-			}()
-			ipInfo = &IPInfo{}
-			object := GetObjectFromRedis(readClient, key, ipInfo)
-			if object != nil {
-				ipInfo = object.(*IPInfo)
-				if ipInfo.Country != "unknown" && ipInfo.CountryFlagEmoji != "" {
-					ipInfoMap[ip] = ipInfo
-					return ipInfo
-				} else {
-					logger.Warnf("[util][QueryIpInfo] new query ip:%s country:%s or emjo is empty", ip, ipInfo.Country)
-				}
+	// if readClient != nil && writeClient != nil {
+	// 	lockValue := AcquireSpinLock(writeClient, key, time.Duration(5)*time.Second, time.Duration(3)*time.Second)
+	// 	if lockValue != 0 {
+	// 		defer func() {
+	// 			ReleaseSpinLock(writeClient, key, lockValue)
+	// 		}()
+	// 		ipInfo = &IPInfo{}
+	// 		object := GetObjectFromRedis(readClient, key, ipInfo)
+	// 		if object != nil {
+	// 			ipInfo = object.(*IPInfo)
+	// 			if ipInfo.Country != "unknown" && ipInfo.CountryFlagEmoji != "" {
+	// 				ipInfoMap[ip] = ipInfo
+	// 				return ipInfo
+	// 			} else {
+	// 				logger.Warnf("[util][QueryIpInfo] new query ip:%s country:%s or emjo is empty", ip, ipInfo.Country)
+	// 			}
 
-			}
+	// 		}
+	// 	}
+	// }
+
+	ipInfo = &IPInfo{}
+	object := GetObjectFromRedis(readClient, key, ipInfo)
+	if object != nil {
+		ipInfo = object.(*IPInfo)
+		if ipInfo.Country != "unknown" && ipInfo.CountryFlagEmoji != "" {
+			ipInfoMap[ip] = ipInfo
+			return ipInfo
+		} else {
+			logger.Warnf("[util][QueryIpInfo] new query ip:%s country:%s or emjo is empty", ip, ipInfo.Country)
 		}
+
 	}
+
 	ipInfo = IPQuery(ip)
 	if ipInfo != nil {
 		ipInfoMap[ip] = ipInfo
