@@ -2,6 +2,7 @@ package util
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -11,13 +12,14 @@ import (
 )
 
 const (
-	Ip_APIUrl       string = "http://ip-api.com/json/"
-	IpStackApiUrl   string = "http://api.ipstack.com"
-	APIIpUrl        string = "http://apiip.net/api"
-	IPApiUrl        string = "http://api.ipapi.com/api/"
-	IpUserAgentInfo string = "https://ip.useragentinfo.com/json"
-	IPToLocation    string = "https://api.ip2location.io/"
-	IPRegistry      string = "https://api.ipregistry.co/"
+	Ip_APIUrl          string = "http://ip-api.com/json/"
+	IpStackApiUrl      string = "http://api.ipstack.com"
+	APIIpUrl           string = "http://apiip.net/api"
+	IPApiUrl           string = "http://api.ipapi.com/api/"
+	IpUserAgentInfoUrl string = "https://ip.useragentinfo.com/json"
+	IPToLocationUrl    string = "https://api.ip2location.io/"
+	IPRegistryUrl      string = "https://api.ipregistry.co/"
+	IPInfoUrl          string = "https://ipinfo.io/"
 
 	IpStackApiKey1    string = "7526b5001e2cc6fbc854feddc19e4a76"
 	IpStackApiKey2    string = "e3dcfe9ed9635455e3333ce8eadb9ea3"
@@ -25,13 +27,14 @@ const (
 	IPApiKey          string = "8557773513ffb5242020ad75fdf76e97"
 	IPToLocationKey   string = "5DFCDB79756CE10039FCE40E36EB632D"
 	IPRegistryKey     string = "3fbw90yjv8v0pog4"
+	IPInfoKey         string = "c4e6f9d5b42c85"
 	IpQueryMaxTimeout        = time.Duration(60) * time.Second
 )
 
 var (
 	IpStackApiKey    string             = IpStackApiKey2
 	ipInfoMap        map[string]*IPInfo = map[string]*IPInfo{}
-	ipQueryFunc                         = [...]func(string) *IPInfo{IPToLocationQuery, IPRegistryQuery, APIIpQuery, IPStackQuery, IP_ApiQuery}
+	ipQueryFunc                         = [...]func(string) *IPInfo{IPToLocationQuery, IPInfoIoQuery, IPRegistryQuery, APIIpQuery, IPStackQuery, IP_ApiQuery}
 	ipQueryFuncIndex                    = 0
 )
 
@@ -310,6 +313,16 @@ type IPRegistryInfo struct {
 	TimeZone   IPRegistryTimeZone   `json:"time_zone"`
 }
 
+type IPInfoIo struct {
+	Ip          string `json:"ip"`
+	City        string `json:"city"`
+	Region      string `json:"region"`
+	CountryCode string `json:"country"`
+	Loc         string `json:"loc"`
+	Org         string `json:"org"`
+	Timezone    string `json:"timezone"`
+}
+
 func IPQuery(ip string) *IPInfo {
 	index := ipQueryFuncIndex
 	for {
@@ -371,7 +384,7 @@ func APIIpQuery(ip string) *IPInfo {
 }
 
 func IPUserAgentInfoQuery(ip string) *IPInfo {
-	url := fmt.Sprintf("%s?ip=%s", IpUserAgentInfo, ip)
+	url := fmt.Sprintf("%s?ip=%s", IpUserAgentInfoUrl, ip)
 	_, err := HttpGetJson(url, &IPInfo{}, IpQueryMaxTimeout)
 	if err != nil {
 		logger.Warnf("[util][IPUserAgentInfoQuery] new query ip:%s failed:%s", ip, err.Error())
@@ -418,7 +431,7 @@ func IPStackQuery(ip string) *IPInfo {
 }
 
 func IPToLocationQuery(ip string) *IPInfo {
-	url := fmt.Sprintf("%s?key=%s&ip=%s", IPToLocation, IPToLocationKey, ip)
+	url := fmt.Sprintf("%s?key=%s&ip=%s", IPToLocationUrl, IPToLocationKey, ip)
 	ipInfoIf, err := HttpGetJson(url, &IPTOLacationInfo{}, IpQueryMaxTimeout)
 	if err != nil {
 		logger.Warnf("[util][IPToLocationQuery]new query ip:%s failed:%s", ip, err.Error())
@@ -440,7 +453,7 @@ func IPToLocationQuery(ip string) *IPInfo {
 	return ipInfo
 }
 func IPRegistryQuery(ip string) *IPInfo {
-	url := fmt.Sprintf("%s%s?key=%s", IPRegistry, ip, IPRegistryKey)
+	url := fmt.Sprintf("%s%s?key=%s", IPRegistryUrl, ip, IPRegistryKey)
 	ipInfoIf, err := HttpGetJson(url, &IPRegistryInfo{}, IpQueryMaxTimeout)
 	if err != nil {
 		logger.Warnf("[util][IPToLocationQuery]new query ip:%s failed:%s", ip, err.Error())
@@ -466,6 +479,34 @@ func IPRegistryQuery(ip string) *IPInfo {
 	ipInfo.UpdateTS = time.Now()
 	return ipInfo
 }
+
+func IPInfoIoQuery(ip string) *IPInfo {
+	url := fmt.Sprintf("%s%s?token=%s", IPInfoUrl, ip, IPInfoKey)
+	ipInfoIf, err := HttpGetJson(url, &IPInfoIo{}, IpQueryMaxTimeout)
+	if err != nil {
+		logger.Warnf("[util][IPToLocationQuery]new query ip:%s failed:%s", ip, err.Error())
+		return nil
+	}
+	ipInfoIo := ipInfoIf.(*IPInfoIo)
+	ipInfo := &IPInfo{}
+
+	ipInfo.City = ipInfoIo.City
+	ipInfo.Country = countries.ByName(ipInfoIo.CountryCode).String()
+	ipInfo.CountryCode = ipInfoIo.CountryCode
+	ipInfo.CountryFlagEmoji, ipInfo.CountryFlagEmojiUnicode = GetFlag(ipInfoIo.CountryCode)
+	locArray := strings.Split(ipInfoIo.Loc, ",")
+	value, _ := strconv.ParseFloat(locArray[0], 64)
+	ipInfo.Lat = float32(value)
+	value, _ = strconv.ParseFloat(locArray[1], 64)
+	ipInfo.Lon = float32(value)
+	ipInfo.Query = ipInfoIo.Ip
+	ipInfo.RegionName = ipInfoIo.Region
+	ipInfo.Timezone = ipInfoIo.Timezone
+	ipInfo.ISP = ipInfoIo.Org
+	ipInfo.UpdateTS = time.Now()
+	return ipInfo
+}
+
 func GetAddrFromNetworkAddr(addr string) string {
 	if strings.Contains(addr, "[") && strings.Contains(addr, "]") {
 		values := strings.Split(addr, "]:")
