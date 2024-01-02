@@ -18,6 +18,10 @@ const (
 	Code_Path_Config_Error ErrorCode = 1006
 	Code_Invalid_Device_Id ErrorCode = 1007
 	Code_Account_Is_Binded ErrorCode = 1008
+	Code_Invalid_SDK_Type  ErrorCode = 1009
+	Code_Invalid_SDK_Token ErrorCode = 1010
+	Code_SDK_Token_Expired ErrorCode = 1011
+	Code_SDK_Server_Error  ErrorCode = 1012
 
 	Code_Trace_Event_Is_Empty ErrorCode = 2001
 
@@ -56,6 +60,10 @@ var errorMsgMap = map[ErrorCode]string{
 	Code_Path_Config_Error:   "router path config error",
 	Code_Invalid_Device_Id:   "invalid device id",
 	Code_Account_Is_Binded:   "account is binded",
+	Code_Invalid_SDK_Type:    "invalid sdk type",
+	Code_Invalid_SDK_Token:   "invalid sdk token",
+	Code_SDK_Token_Expired:   "sdk token expired",
+	Code_SDK_Server_Error:    "sdk server error",
 
 	Code_Trace_Event_Is_Empty: "trace event requires at least one",
 
