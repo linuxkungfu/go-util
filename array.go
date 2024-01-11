@@ -7,6 +7,21 @@ func MergeArray[T any](first []T, second []T) []T {
 	return first
 }
 
+func MergeUniqueArray[T any](first []T, second []T) []T {
+	valueMap := map[any]bool{}
+	for _, value := range first {
+		valueMap[value] = true
+	}
+	for _, value := range second {
+		_, ok := valueMap[value]
+		if !ok {
+			first = append(first, value)
+			valueMap[value] = true
+		}
+	}
+	return first
+}
+
 func UniqueArray[T any](values []T) []T {
 	newArray := make([]T, 0)
 	tempMap := make(map[string][]T, len(values))

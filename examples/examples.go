@@ -24,8 +24,12 @@ func main() {
 	// md5Password := util.PasswordPlainToMd5(124, "123446")
 	// fmt.Printf("md5Password:%s\n", md5Password)
 	// fmt.Printf("device category:%s", util.GetDeviceCategory("", ""))
-	ipInfo := util.IPInfoIoQuery("191.6.52.188")
-	fmt.Printf("ipInfo:%v\n", ipInfo)
+	// ipInfo := util.IPInfoIoQuery("191.6.52.188")
+	// fmt.Printf("ipInfo:%v\n", ipInfo)
 
-	fmt.Printf("country name:%s\n", util.CountryRegionConvert("Bosnia and Herzegovina"))
+	// fmt.Printf("country name:%s\n", util.CountryRegionConvert("Bosnia and Herzegovina"))
+
+	first := []string{"1001", "1002"}
+	second := []string{"1001", "1003", "1003"}
+	fmt.Printf("merge unique array:%v", util.MergeUniqueArray(first, second))
 }
