@@ -13,6 +13,8 @@ import (
 	logger "github.com/sirupsen/logrus"
 )
 
+var Logger *golog.Logger = golog.Default
+
 type CustomeLog struct {
 }
 
