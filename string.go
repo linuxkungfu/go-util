@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	logger "github.com/sirupsen/logrus"
 	"github.com/spaolacci/murmur3"
 )
 
@@ -146,6 +147,28 @@ func CapacityToInteger(capacityString string) uint64 {
 			return 0
 		}
 		return size
+	}
+}
+
+// StringToTime convert string to time format
+func StringToTime(stringTime string) time.Duration {
+	lastChar := stringTime[len(stringTime)-1:]
+	valueStr := stringTime[0 : len(stringTime)-1]
+	value, err := strconv.ParseInt(valueStr, 10, 0)
+	if err != nil {
+		return 0
+	}
+	if strings.EqualFold(lastChar, "d") {
+		return time.Hour * time.Duration(value*24)
+	} else if strings.EqualFold(lastChar, "h") {
+		return time.Hour * time.Duration(value)
+	} else if strings.EqualFold(lastChar, "m") {
+		return time.Minute * time.Duration(value)
+	} else if strings.EqualFold(lastChar, "s") {
+		return time.Minute * time.Duration(value)
+	} else {
+		logger.Warnf("[config][]StringToTime failed, time:%s", stringTime)
+		return 0
 	}
 }
 

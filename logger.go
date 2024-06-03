@@ -47,6 +47,13 @@ type MyFormatter struct {
 	DisableColors   bool
 }
 
+// Logger log config
+type LoggerConfig struct {
+	Level    string `json:"level"`
+	Dir      string `json:"dir"`
+	Rotation string `json:"rotation"`
+}
+
 // Format format logrus time
 func (s *MyFormatter) Format(entry *logger.Entry) ([]byte, error) {
 	timestamp := time.Now().Local().Format("2006-01-02 15:04:05.000")
@@ -87,4 +94,59 @@ func SetLogLevel(levelStr string) {
 		return
 	}
 	logger.SetLevel(level)
+}
+
+func Debugf(format string, args ...interface{}) {
+	logger.Debugf(format, args...)
+}
+
+func Printf(format string, args ...interface{}) {
+	logger.Printf(format, args...)
+}
+
+func Infof(format string, args ...interface{}) {
+	logger.Infof(format, args...)
+}
+
+func Warnf(format string, args ...interface{}) {
+	logger.Warnf(format, args...)
+}
+
+func Warningf(format string, args ...interface{}) {
+	logger.Warningf(format, args...)
+}
+
+func Errorf(format string, args ...interface{}) {
+	logger.Errorf(format, args...)
+}
+
+func Panicf(format string, args ...interface{}) {
+	logger.Panicf(format, args...)
+}
+
+func Fatalf(format string, args ...interface{}) {
+	logger.Fatalf(format, args...)
+}
+
+// InitLogByConfig initialize log by specify config
+func InitLog(logConfig LoggerConfig, processName string) {
+	if (logConfig == LoggerConfig{}) {
+		return
+	}
+	if logConfig.Level != "" {
+		SetLogLevel(logConfig.Level)
+	}
+	rotationTime := time.Hour * time.Duration(24)
+	if logConfig.Rotation != "" {
+		rotationTime = StringToTime(logConfig.Rotation)
+	}
+	if logConfig.Dir != "" {
+		if logConfig.Dir[len(logConfig.Dir)-1:] == "/" {
+			SetLogFile(logConfig.Dir+processName+".log", rotationTime)
+		} else {
+			SetLogFile(logConfig.Dir+"/"+processName+".log", rotationTime)
+		}
+	} else {
+		SetLogFile("./logs/"+processName+".log", rotationTime)
+	}
 }
