@@ -76,6 +76,9 @@ func InitConfig[T interface{}](dir string, env string, processName string, defau
 		logger.Warnf("[config][]InitConfig env %s no config file", env)
 	}
 
+	sysConfigRefPtr = reflect.ValueOf(sysConfig)
+	sysConfigRef = sysConfigRefPtr.Elem()
+	LoggerValue = sysConfigRef.FieldByName("Logger")
 	if LoggerValue.IsValid() {
 		Logger := LoggerValue.Interface().(LoggerConfig)
 		InitLog(Logger, processName)
