@@ -18,3 +18,7 @@ func init() {
 func GetLocalIp() string {
 	return localIp
 }
+
+func UpdateLocalIp(ip string) {
+	localIp = ip
+}
