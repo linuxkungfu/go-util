@@ -38,11 +38,11 @@ func InitConfig[T interface{}](dir string, env string, processName string, defau
 	sysConfigRefPtr := reflect.ValueOf(sysConfig)
 	sysConfigRef := sysConfigRefPtr.Elem()
 	LoggerValue := sysConfigRef.FieldByName("Logger")
-	if LoggerValue.IsValid() {
-		Logger := LoggerValue.Interface().(LoggerConfig)
-		InitLog(Logger, processName)
-	}
 	if env == "" {
+		if LoggerValue.IsValid() && LoggerValue.Interface() != nil {
+			Logger := LoggerValue.Interface().(LoggerConfig)
+			InitLog(Logger, processName)
+		}
 		if didLoadConfig != nil {
 			didLoadConfig(sysConfig, env, processName)
 		}
@@ -79,7 +79,7 @@ func InitConfig[T interface{}](dir string, env string, processName string, defau
 	sysConfigRefPtr = reflect.ValueOf(sysConfig)
 	sysConfigRef = sysConfigRefPtr.Elem()
 	LoggerValue = sysConfigRef.FieldByName("Logger")
-	if LoggerValue.IsValid() {
+	if LoggerValue.IsValid() && LoggerValue.Interface() != nil {
 		Logger := LoggerValue.Interface().(LoggerConfig)
 		InitLog(Logger, processName)
 	}
