@@ -37,6 +37,7 @@ const (
 	Code_Http_Res_Code_Error          ErrorCode = 5009
 	Code_Build_Rtp_Error              ErrorCode = 5010
 	Code_Signalling_UnReplicate_Error ErrorCode = 5011
+	Code_QueryRank_Error              ErrorCode = 5012
 
 	// websocket error
 	Code_WebSocket_Unauth              ErrorCode = 6001
@@ -77,6 +78,7 @@ var errorMsgMap = map[ErrorCode]string{
 	Code_Http_Res_Data_Error:        "http response data error",
 	Code_Http_Res_Code_Error:        "http response buz code error",
 	Code_Build_Rtp_Error:            "build rtp error",
+	Code_QueryRank_Error:            "query rank error",
 
 	Code_WebSocket_Unauth:              "unauthorized error",
 	Code_WebSocket_MissParams:          "miss require parameters",
