@@ -1,0 +1,87 @@
+{
+  
+  "WebServer": {
+    "Protocol": "http",
+    "Port": 6008,
+    "Address": "0.0.0.0"
+  },
+  "Version": "0.0.1",
+  "Logger" : {
+    "level" : "DEBUG",
+    "dir" : "./logs/",
+    "rotation" : "24H"
+  },
+  "Output": {
+    "MQ": [{
+      "Type": "nats",
+      "Urls": "nats://175.24.97.105:4222,nats://42.192.164.134:4222",
+      "Token": "123",
+      "Timeout": "50s",
+      "PrefixSubject": "Trace."
+    }],
+    "Databases": [],
+    "Caches":[
+      {
+        "Type": "redis",
+        "Ip":"175.24.97.105",
+        "Port": 6379,
+        "DB": 0,
+        "UserName": "",
+        "Password": "",
+        "InstanceType":"master",
+        "Lable": "game"
+      }
+    ]
+  },
+  "Input": {
+    "Databases": [{
+      "Type": "postgres",
+      "Ip": "175.24.97.105",
+      "Port": 5432,
+      "DBName": "apptrace",
+      "UserName": "apptrace",
+      "Password": "123456",
+      "MaxIdleConns": 0,
+      "MaxConns": 0,
+      "Lable": "trace"
+    },
+    {
+      "Type": "postgres",
+      "Ip": "175.24.97.105",
+      "Port": 5432,
+      "DBName": "game",
+      "UserName": "game",
+      "Password": "123456",
+      "MaxIdleConns": 0,
+      "MaxConns": 0,
+      "Lable": "game"
+    },
+    {
+      "Type": "postgres",
+      "Ip": "175.24.97.105",
+      "Port": 5432,
+      "DBName": "kungapp",
+      "UserName": "kungapp",
+      "Password": "123456",
+      "MaxIdleConns": 0,
+      "MaxConns": 0,
+      "Lable": "app"
+    }],
+    "Caches":[
+      {
+        "Type": "redis",
+        "Ip":"144.34.169.76",
+        "Port": 6379,
+        "DB": 0,
+        "UserName": "",
+        "Password": "",
+        "InstanceType":"slave",
+        "Lable": "game"
+      }
+    ]
+  }, 
+  "Subjects": {
+    "NotifyPushStream":"req_push_stream_local",
+    "QueuePushStream":"app-trace"
+  }
+}

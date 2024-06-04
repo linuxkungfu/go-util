@@ -4,15 +4,19 @@ import (
 	"fmt"
 
 	"github.com/linuxkungfu/go-util"
-	"github.com/linuxkungfu/go-util/dep/countries"
 )
 
+type SysConfig struct {
+	Logger util.LoggerConfig `json:"Logger"`
+}
+
 func main() {
-	serverId := util.CreateServerId("123")
-	fmt.Printf("server id:%s\n", serverId)
-	emoji, unicode := util.GetFlag("US")
-	fmt.Printf("emoji:%s unicode:%s\n", emoji, unicode)
-	fmt.Printf("country name:%s\n", countries.ByName("US").String())
+	// serverId := util.CreateServerId("123")
+	// fmt.Printf("server id:%s\n", serverId)
+	// emoji, unicode := util.GetFlag("US")
+	// fmt.Printf("emoji:%s unicode:%s\n", emoji, unicode)
+	// fmt.Printf("country name:%s\n", countries.ByName("US").String())
+	util.InitConfig("./etc", "dev", "util", &SysConfig{}, nil)
 	// ipInfo := util.IPToLocationQuery("191.6.52.188")
 	// fmt.Printf("ipInfo:%v\n", ipInfo)
 	// ipInfo = util.APIIpQuery("191.6.52.188")
