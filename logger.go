@@ -132,6 +132,7 @@ func Fatalf(format string, args ...interface{}) {
 
 // InitLogByConfig initialize log by specify config
 func InitLog(logConfig LoggerConfig, processName string) {
+	SetServerInfo(processName)
 	if (logConfig == LoggerConfig{}) {
 		return
 	}

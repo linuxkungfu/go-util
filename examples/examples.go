@@ -7,7 +7,7 @@ import (
 )
 
 type SysConfig struct {
-	Logger util.LoggerConfig `json:"Logger"`
+	// Logger util.LoggerConfig `json:"Logger"`
 }
 
 func main() {
