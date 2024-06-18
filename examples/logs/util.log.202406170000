@@ -1,0 +1,11 @@
+[INFO][2024-06-17 16:27:56.746 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:41:16.876 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:50:34.004 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:52:43.551 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:54:33.572 T+8][util][][orm][SetupORMInstance]name:test
+[WARNING][2024-06-17 16:54:33.573 T+8][util][][mq][SetupMQInstance]name:test, operate type:read, miss type field
+[INFO][2024-06-17 16:54:34.855 T+8][util][][mq][SetupMQInstance]name:test, operate type:read
+[INFO][2024-06-17 16:55:24.815 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:55:32.568 T+8][util][][mq][SetupMQInstance]name:test, operate type:read
+[INFO][2024-06-17 16:56:56.704 T+8][util][][orm][SetupORMInstance]name:test
+[INFO][2024-06-17 16:57:00.196 T+8][util][][mq][SetupMQInstance]name:test, operate type:read

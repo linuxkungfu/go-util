@@ -1,29 +1,44 @@
-package ORM
+package orm
 
 import (
-	"github.com/linuxkungfu/go-util"
+	Logger "github.com/linuxkungfu/go-util/internal/logger"
 	"github.com/linuxkungfu/go-util/orm/internal/cache"
 	"github.com/linuxkungfu/go-util/orm/internal/database"
 	"github.com/linuxkungfu/go-util/orm/internal/mq"
 	"github.com/linuxkungfu/go-util/orm/iorm"
 )
 
-var logger = util.Logger
+var logger Logger.Logger = &Logger.UtilLogger{}
 
 func init() {
-
 }
 
-func SetupORMInstance(name string, ormType iorm.ORMType, config interface{}) interface{} {
+func InitLog(lg Logger.Logger) {
+	logger = lg
+	cache.InitLog(logger)
+	database.InitLog(logger)
+	mq.InitLog(logger)
+}
+
+func SetupORMInstance(name string, ormType iorm.ORMType, opType iorm.ORMOperateType, config interface{}) iorm.IORM {
+	logger.Infof("[orm][SetupORMInstance]name:%s", name)
+	var ins iorm.IORM = nil
 	switch ormType {
 	case iorm.ORMType_Cache:
-		return cache.SetupCacheInstance(name, config)
+		ins = cache.SetupCacheInstance(name, opType, config)
 	case iorm.ORMType_Database:
-		return database.SetupDatabaseInstance(name, config)
+		ins = database.SetupDatabaseInstance(name, opType, config)
 	case iorm.ORMType_MQ:
-		return mq.SetupMQInstance(name, config)
+		ins = mq.SetupMQInstance(name, opType, config)
 	default:
 		logger.Warnf("[ORM][SetupORMInstance]unknown orm type:%s", ormType)
 	}
+	if ins != nil {
+		ins.Init()
+	}
+	return ins
+}
+
+func GetDBByName(name string, opType iorm.ORMOperateType) iorm.IORMDatabase {
 	return nil
 }

@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/kataras/golog"
-
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
+	orm "github.com/linuxkungfu/go-util/orm"
 	logger "github.com/sirupsen/logrus"
 )
 
@@ -132,7 +132,9 @@ func Fatalf(format string, args ...interface{}) {
 
 // InitLogByConfig initialize log by specify config
 func InitLog(logConfig LoggerConfig, processName string) {
+	orm.InitLog(Logger)
 	SetServerInfo(processName)
+
 	if (logConfig == LoggerConfig{}) {
 		return
 	}

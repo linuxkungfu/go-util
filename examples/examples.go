@@ -1,14 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/linuxkungfu/go-util"
-)
+	"github.com/linuxkungfu/go-util/examples/config"
 
-type SysConfig struct {
-	// Logger util.LoggerConfig `json:"Logger"`
-}
+	"github.com/linuxkungfu/go-util"
+	"github.com/linuxkungfu/go-util/orm"
+	"github.com/linuxkungfu/go-util/orm/iorm"
+)
 
 func main() {
 	// serverId := util.CreateServerId("123")
@@ -16,7 +17,8 @@ func main() {
 	// emoji, unicode := util.GetFlag("US")
 	// fmt.Printf("emoji:%s unicode:%s\n", emoji, unicode)
 	// fmt.Printf("country name:%s\n", countries.ByName("US").String())
-	util.InitConfig("./etc", "dev", "util", &SysConfig{}, nil)
+	sysConfig := &config.SysConfig{}
+	util.InitConfig("./etc", "dev", "util", sysConfig, nil)
 	// ipInfo := util.IPToLocationQuery("191.6.52.188")
 	// fmt.Printf("ipInfo:%v\n", ipInfo)
 	// ipInfo = util.APIIpQuery("191.6.52.188")
@@ -35,5 +37,13 @@ func main() {
 
 	first := []string{"1001", "1002"}
 	second := []string{"1001", "1003", "1003"}
-	fmt.Printf("merge unique array:%v", util.MergeUniqueArray(first, second))
+	fmt.Printf("merge unique array:%v\n", util.MergeUniqueArray(first, second))
+	for _, config := range sysConfig.Input.MQ {
+		configMap := map[string]interface{}{}
+		data, err := json.Marshal(config)
+		if err == nil {
+			json.Unmarshal(data, &configMap)
+			orm.SetupORMInstance("test", iorm.ORMType_MQ, iorm.ORMOperateType_Read, configMap)
+		}
+	}
 }

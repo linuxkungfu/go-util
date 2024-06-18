@@ -5,6 +5,7 @@ go 1.19
 require (
 	github.com/kataras/golog v0.1.8
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/nats-io/nats.go v1.36.0
 	github.com/redis/go-redis/v9 v9.3.1
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.3
@@ -13,8 +14,12 @@ require (
 )
 
 require (
+	github.com/klauspost/compress v1.17.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421 // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
+	github.com/nats-io/nkeys v0.4.7 // indirect
+	github.com/nats-io/nuid v1.0.1 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
 )
 
 require (
@@ -29,5 +34,5 @@ require (
 	github.com/tklauser/go-sysconf v0.3.13 // indirect
 	github.com/tklauser/numcpus v0.7.0 // indirect
 	github.com/yusufpapurcu/wmi v1.2.3 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 )

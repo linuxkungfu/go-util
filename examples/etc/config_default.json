@@ -34,6 +34,13 @@
     ]
   },
   "Input": {
+    "MQ": [{
+      "Type": "nats",
+      "Urls": "nats://175.24.97.105:4222,nats://42.192.164.134:4222",
+      "Token": "123",
+      "Timeout": "50s",
+      "PrefixSubject": "Examples-Trace."
+    }],
     "Databases": [{
       "Type": "postgres",
       "Ip": "175.24.97.105",
