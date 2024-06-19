@@ -1,6 +1,10 @@
 package util
 
-import "reflect"
+import (
+	"reflect"
+
+	utilString "github.com/linuxkungfu/go-util/string"
+)
 
 func MergeArray[T any](first []T, second []T) []T {
 	first = append(first, second...)
@@ -26,7 +30,7 @@ func UniqueArray[T any](values []T) []T {
 	newArray := make([]T, 0)
 	tempMap := make(map[string][]T, len(values))
 	for _, v := range values {
-		tempArray, exist := tempMap[AnyToStr(v)]
+		tempArray, exist := tempMap[utilString.AnyToStr(v)]
 		if exist {
 			found := false
 			for _, e := range tempArray {
@@ -36,11 +40,11 @@ func UniqueArray[T any](values []T) []T {
 				}
 			}
 			if !found {
-				tempMap[AnyToStr(v)] = append(tempArray, v)
+				tempMap[utilString.AnyToStr(v)] = append(tempArray, v)
 				newArray = append(newArray, v)
 			}
 		} else {
-			tempMap[AnyToStr(v)] = []T{v}
+			tempMap[utilString.AnyToStr(v)] = []T{v}
 			newArray = append(newArray, v)
 		}
 	}

@@ -10,6 +10,7 @@ import (
 	"github.com/kataras/golog"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	orm "github.com/linuxkungfu/go-util/orm"
+	utilString "github.com/linuxkungfu/go-util/string"
 	logger "github.com/sirupsen/logrus"
 )
 
@@ -39,7 +40,7 @@ func (log *CustomeLog) Info(args ...interface{}) {
 }
 
 func (log *CustomeLog) Debug(args ...interface{}) {
-	logger.Info(args...)
+	logger.Debug(args...)
 }
 
 type MyFormatter struct {
@@ -143,7 +144,7 @@ func InitLog(logConfig LoggerConfig, processName string) {
 	}
 	rotationTime := time.Hour * time.Duration(24)
 	if logConfig.Rotation != "" {
-		rotationTime = StringToTime(logConfig.Rotation)
+		rotationTime = utilString.StringToTime(logConfig.Rotation)
 	}
 	if logConfig.Dir != "" {
 		if logConfig.Dir[len(logConfig.Dir)-1:] == "/" {

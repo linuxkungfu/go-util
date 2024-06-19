@@ -12,6 +12,7 @@ import (
 	"sync"
 	"time"
 
+	utilString "github.com/linuxkungfu/go-util/string"
 	logger "github.com/sirupsen/logrus"
 	"github.com/twmb/murmur3"
 )
@@ -111,7 +112,7 @@ func (conn *NetworkConn) OnClosed(interface{}) {
 }
 
 func (conn *NetworkConn) Close() {
-	logger.Infof("[networkConn][%s]local addr %s:%d remote addr %s:%d close read bytes:%s write bytes:%s, failed count:%d", conn.id, conn.LocalIp, conn.LocalPort, conn.RemoteIp, conn.RemotePort, FormatFileSize(conn.ReadBytes), FormatFileSize(conn.WriteBytes), conn.FailedCount)
+	logger.Infof("[networkConn][%s]local addr %s:%d remote addr %s:%d close read bytes:%s write bytes:%s, failed count:%d", conn.id, conn.LocalIp, conn.LocalPort, conn.RemoteIp, conn.RemotePort, utilString.FormatFileSize(conn.ReadBytes), utilString.FormatFileSize(conn.WriteBytes), conn.FailedCount)
 	if strings.ToLower(conn.ConnProto) == "udp" {
 		conn.closeUdpConn()
 	} else if strings.ToLower(conn.ConnProto) == "tcp" {

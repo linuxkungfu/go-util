@@ -1,5 +1,9 @@
 package util
 
+import (
+	utilString "github.com/linuxkungfu/go-util/string"
+)
+
 // STUN Attributes
 // https://www.iana.org/assignments/stun-parameters/stun-parameters.xhtml
 
@@ -12,9 +16,9 @@ const (
 )
 
 func CreateStunIceUsername() string {
-	return CreateRandString(StunIceUfragLen)
+	return utilString.CreateRandString(StunIceUfragLen)
 }
 
 func CreateStunIcePassword() string {
-	return CreateRandString(StunIcePwdLen)
+	return utilString.CreateRandString(StunIcePwdLen)
 }

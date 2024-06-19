@@ -1,4 +1,4 @@
-package util
+package string
 
 import (
 	"encoding/json"
@@ -12,7 +12,6 @@ import (
 	"strings"
 	"time"
 
-	logger "github.com/sirupsen/logrus"
 	"github.com/spaolacci/murmur3"
 )
 
@@ -80,10 +79,10 @@ func CamelString(s string) string {
 	num := len(s) - 1
 	for i := 0; i <= num; i++ {
 		d := s[i]
-		if k == false && d >= 'A' && d <= 'Z' {
+		if !k && d >= 'A' && d <= 'Z' {
 			k = true
 		}
-		if d >= 'a' && d <= 'z' && (j || k == false) {
+		if d >= 'a' && d <= 'z' && (j || !k) {
 			d = d - 32
 			j = false
 			k = true
@@ -167,8 +166,8 @@ func StringToTime(stringTime string) time.Duration {
 	} else if strings.EqualFold(lastChar, "s") {
 		return time.Minute * time.Duration(value)
 	} else {
-		logger.Warnf("[config][]StringToTime failed, time:%s", stringTime)
-		return 0
+		// logger.Warnf("[config][]StringToTime failed, time:%s", stringTime)
+		return -1
 	}
 }
 
@@ -302,25 +301,3 @@ func StringToDuration(durStr string) time.Duration {
 	}
 	return 0
 }
-
-// // StringToTime convert string to time format
-// func StringToTime(stringTime string) time.Duration {
-// 	lastChar := stringTime[len(stringTime)-1:]
-// 	valueStr := stringTime[0 : len(stringTime)-1]
-// 	value, err := strconv.ParseInt(valueStr, 10, 0)
-// 	if err != nil {
-// 		return 0
-// 	}
-// 	if strings.EqualFold(lastChar, "d") {
-// 		return time.Hour * time.Duration(value*24)
-// 	} else if strings.EqualFold(lastChar, "h") {
-// 		return time.Hour * time.Duration(value)
-// 	} else if strings.EqualFold(lastChar, "m") {
-// 		return time.Minute * time.Duration(value)
-// 	} else if strings.EqualFold(lastChar, "s") {
-// 		return time.Minute * time.Duration(value)
-// 	} else {
-// 		logger.Warnf("[config][]StringToTime failed, time:%s", stringTime)
-// 		return 0
-// 	}
-// }

@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/linuxkungfu/go-util"
+	utilString "github.com/linuxkungfu/go-util/string"
 )
 
 type DatabaseType string
@@ -92,14 +93,14 @@ type StatisticInfo struct {
 
 func (statistic *StatisticInfo) GetCollectAppIdsInterval() time.Duration {
 	if statistic.collectAppIdsInterval == 0 {
-		statistic.collectAppIdsInterval = util.StringToDuration(statistic.CollectAppIdsIntervalStr)
+		statistic.collectAppIdsInterval = utilString.StringToDuration(statistic.CollectAppIdsIntervalStr)
 	}
 	return statistic.collectAppIdsInterval
 }
 
 func (statistic *StatisticInfo) GetCalculateRetentionInterval() time.Duration {
 	if statistic.CalculateRetentionInterval == 0 {
-		statistic.CalculateRetentionInterval = util.StringToDuration(statistic.CalculateRetentionIntervalStr)
+		statistic.CalculateRetentionInterval = utilString.StringToDuration(statistic.CalculateRetentionIntervalStr)
 	}
 	return statistic.CalculateRetentionInterval
 }

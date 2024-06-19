@@ -38,7 +38,21 @@ func SetupORMInstance(name string, ormType iorm.ORMType, opType iorm.ORMOperateT
 	}
 	return ins
 }
-
+func GetCacheByName(name string, opType iorm.ORMOperateType) iorm.IORMCache {
+	return cache.GetCacheInstanceByName(name, opType)
+}
 func GetDBByName(name string, opType iorm.ORMOperateType) iorm.IORMDatabase {
-	return nil
+	return database.GetDBInstanceByName(name, opType)
+}
+
+func GetMQByName(name string, opType iorm.ORMOperateType) iorm.IORMMQ {
+	return mq.GetMQInstanceByName(name, opType)
+}
+func PurgeMQByName(name string) {
+	mq.PurgeMQByName(name)
+}
+func Shutdown() {
+	cache.Shutdown()
+	database.Shutdown()
+	mq.Shutdown()
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 
 	"github.com/linuxkungfu/go-util/examples/config"
 
@@ -19,6 +20,7 @@ func main() {
 	// fmt.Printf("country name:%s\n", countries.ByName("US").String())
 	sysConfig := &config.SysConfig{}
 	util.InitConfig("./etc", "dev", "util", sysConfig, nil)
+	util.CreateServerId("127.0.0.1:20001")
 	// ipInfo := util.IPToLocationQuery("191.6.52.188")
 	// fmt.Printf("ipInfo:%v\n", ipInfo)
 	// ipInfo = util.APIIpQuery("191.6.52.188")
@@ -46,4 +48,5 @@ func main() {
 			orm.SetupORMInstance("test", iorm.ORMType_MQ, iorm.ORMOperateType_Read, configMap)
 		}
 	}
+	time.Sleep(time.Duration(100) * time.Second)
 }

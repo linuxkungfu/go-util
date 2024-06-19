@@ -57,12 +57,16 @@ type IORM interface {
 	Type() ORMType
 	OperateType() ORMOperateType
 	Init()
+	Stop()
+	GetConnect() interface{}
 }
 type IORMCache interface {
 	Name() string
 	Type() ORMType
 	OperateType() ORMOperateType
 	Init()
+	Stop()
+	GetConnect() interface{}
 }
 
 type IORMDatabase interface {
@@ -70,10 +74,18 @@ type IORMDatabase interface {
 	Type() ORMType
 	OperateType() ORMOperateType
 	Init()
+	Stop()
+	GetConnect() interface{}
 }
 
 type IORMMQ interface {
 	Name() string
 	Type() ORMType
 	OperateType() ORMOperateType
+	Init()
+	Stop()
+	GetConnect() interface{}
+	Pub(topic, group string, data any) error
+	Sub(topic, group string, f func(topic string, data any)) error
+	Unsub(topic string) error
 }

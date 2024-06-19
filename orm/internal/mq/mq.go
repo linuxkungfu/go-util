@@ -1,11 +1,14 @@
 package mq
 
 import (
+	"sync"
+
 	Logger "github.com/linuxkungfu/go-util/internal/logger"
 	"github.com/linuxkungfu/go-util/orm/iorm"
 )
 
 var logger Logger.Logger = &Logger.UtilLogger{}
+var instanceMap = sync.Map{}
 
 func init() {
 
@@ -30,4 +33,28 @@ func SetupMQInstance(name string, opType iorm.ORMOperateType, config interface{}
 		logger.Warnf("[mq][SetupMQInstance]name:%s, operate type:%s, unknown mq type:%s", name, opType, mqType)
 	}
 	return nil
+}
+
+func GetMQInstanceByName(name string, opType iorm.ORMOperateType) iorm.IORMMQ {
+	insInf, exist := instanceMap.Load(name)
+	if !exist || (insInf.(iorm.IORMMQ).OperateType() != iorm.ORMOperateType_All && insInf.(iorm.IORMMQ).OperateType() != opType) {
+		return nil
+	}
+	return insInf.(iorm.IORMMQ)
+}
+
+func PurgeMQByName(name string) {
+	insInf, exist := instanceMap.Load(name)
+	if !exist {
+		return
+	}
+	instanceMap.Delete(name)
+	insInf.(iorm.IORMMQ).Stop()
+}
+func Shutdown() {
+	instanceMap.Range(func(name, insInf any) bool {
+		insInf.(iorm.IORMMQ).Stop()
+		return true
+	})
+	instanceMap = sync.Map{}
 }
