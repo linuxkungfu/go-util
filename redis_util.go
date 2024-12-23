@@ -25,7 +25,8 @@ func AcquireSpinLock(redisClient *redis.Client, key string, timeout time.Duratio
 	expiredTS := currentTS.Add(timeout)
 	lockValue := currentTS.UnixNano()
 	lockKey := generateLockKey(key)
-	redisCtx, _ := context.WithTimeout(context.Background(), RedisTimeout)
+	redisCtx, cancelCtx := context.WithTimeout(context.Background(), RedisTimeout)
+	defer cancelCtx()
 	for {
 		ret, err := redisClient.SetNX(redisCtx, lockKey, lockValue, ttl).Result()
 		if err != nil || !ret {
@@ -41,7 +42,8 @@ func AcquireSpinLock(redisClient *redis.Client, key string, timeout time.Duratio
 
 func ReleaseSpinLock(redisClient *redis.Client, key string, lockValue int64) bool {
 	lockKey := generateLockKey(key)
-	redisCtx, _ := context.WithTimeout(context.Background(), RedisTimeout)
+	redisCtx, cancelCtx := context.WithTimeout(context.Background(), RedisTimeout)
+	defer cancelCtx()
 	value, err := redisClient.Get(redisCtx, lockKey).Result()
 	if err != nil {
 		if err == redis.Nil {
@@ -66,7 +68,8 @@ func ReleaseSpinLock(redisClient *redis.Client, key string, lockValue int64) boo
 }
 
 func GetObjectFromRedis(redisClient *redis.Client, key string, data interface{}) interface{} {
-	redisCtx, _ := context.WithTimeout(context.Background(), RedisTimeout)
+	redisCtx, cancelCtx := context.WithTimeout(context.Background(), RedisTimeout)
+	defer cancelCtx()
 	value, err := redisClient.Get(redisCtx, key).Result()
 	if err != nil {
 		if err != redis.Nil {
@@ -87,7 +90,8 @@ func GetObjectFromRedis(redisClient *redis.Client, key string, data interface{})
 
 func SetObjectToRedis(redisClient *redis.Client, key string, data interface{}, ttl time.Duration) bool {
 	dataStr, _ := json.Marshal(data)
-	redisCtx, _ := context.WithTimeout(context.Background(), RedisTimeout)
+	redisCtx, cancelCtx := context.WithTimeout(context.Background(), RedisTimeout)
+	defer cancelCtx()
 	_, err := redisClient.Set(redisCtx, key, dataStr, ttl).Result()
 	if err != nil {
 		logger.Warnf("[orm][SetObjectToRedis]set object %s failed:%s", key, err.Error())
