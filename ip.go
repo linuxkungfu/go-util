@@ -408,7 +408,8 @@ func IPStackQuery(ip string) *IPInfo {
 		} else {
 			IpStackApiKey = IpStackApiKey1
 		}
-		return IPStackQuery(ip)
+		// return IPStackQuery(ip)
+		return nil
 	} else if !ipStackInfo.Success {
 		logger.Warnf("[util][IPStackQuery]api response error code:%d error message:%s", ipStackInfo.Error.Code, ipStackInfo.Error.Info)
 		return nil
